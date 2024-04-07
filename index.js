@@ -8,7 +8,7 @@ let topCounter = 0;
 let playerPoint = 0;
 let wallMass = [];
 let health = 100;
-let healthE = 100
+let healthE = 100;
 const game = () => {
     for (let i = 0; i < w * h/2/2+24+24+24; i++) {     
         if (leftX == 1150) {
@@ -59,8 +59,8 @@ const game = () => {
             leftTileGenerator(result, tile);  
             rightTileGenerator(result, tile);
         }
-        enemyGenerator();
-        roomGenerator();
+        setTimeout(enemyGenerator, 500);
+        setTimeout(roomGenerator, 1000);
     };
     function topTileGenerator(result, tile) {
         let i = 0;
@@ -68,10 +68,8 @@ const game = () => {
             i++;
             result -= 24;
             tile = document.getElementById(result);
-            if(result <= 0) {
-                
-            } else if(tile.innerHTML) {
-
+            if(result <= 0) {} else if(tile.innerHTML) {
+                i++;
             } else {
                 tile.insertAdjacentHTML("beforeend", `<div class="tile" id=${result+1000}></div>`);
             }
@@ -86,7 +84,7 @@ const game = () => {
             if(result>312) {
                 
             } else if(tile.innerHTML) {
-                    
+                i++;
             } else {
                 tile.insertAdjacentHTML("beforeend", `<div class="tile" id=${result+1000}></div>`);
            }
@@ -101,8 +99,8 @@ const game = () => {
             if(result%24 == 1) {
                 tile.insertAdjacentHTML("beforeend", `<div class="tile" id=${result+1000}></div>`);
             } else if(tile.innerHTML) {
-                    
             } else {
+                // tile.remove(result);
                 tile.insertAdjacentHTML("beforeend", `<div class="tile" id=${result+1000}></div>`);
             }
         }
@@ -116,7 +114,7 @@ const game = () => {
             if(result%24 == 0) {
                 tile.insertAdjacentHTML("beforeend", `<div class="tile" id=${result+1000}></div>`);
             } else if(tile.innerHTML) {
-                    
+                i++;
             } else {
                 tile.insertAdjacentHTML("beforeend", `<div class="tile" id=${result+1000}></div>`);
             }    
@@ -127,14 +125,20 @@ const game = () => {
         while(i < 3) {
             i++;
             let result = Math.ceil(Math.random() * 312);
-            genTiles(result, stid);
+            setTimeout(genTiles, 500, result, stid);
         };
         function genTiles(result, stid) {
             let tile = document.getElementById(result);
             if(stid == parseInt(tile.id)){
-                parseInt(tile.id) += 1;
+                parseInt(tile.id) += 1; 
             }
-            tile.insertAdjacentHTML("beforeend", `<div class="tileE" id=${result+2000}><div class='health' style="width:${healthE}%"></div></div>`);
+            if(tile.innerHTML) {
+                let childTile = tile.querySelector('div');
+                childTile.remove()
+                tile.insertAdjacentHTML("beforeend", `<div class="tileE" id=${result+2000}><div class='health' style="width:${healthE}%"></div></div>`);
+            } else {
+                tile.insertAdjacentHTML("beforeend", `<div class="tileE" id=${result+2000}><div class='health' style="width:${healthE}%"></div></div>`);
+            }
             let i = 0;
             topTileGenerator(result, tile);
             bottomTileGenerator(result, tile);
@@ -149,8 +153,8 @@ const game = () => {
             let result = Math.ceil(Math.random() * 312);
             let tile = document.getElementById(result);
             tile.insertAdjacentHTML("beforeend", `<div class="tileHP" id=${result+3000}></div>`);
-            topTileGenerator(result);
-            bottomTileGenerator(result);
+            topTileGenerator(result, tile);
+            bottomTileGenerator(result, tile);
         }
     }
 };
@@ -186,48 +190,77 @@ window.addEventListener('keydown', function (event) {
         let player = document.getElementById(playerPoint);
         let plpoint = document.getElementById(playerPoint+4000);
         if(key === 'w' || key === 'ц') {
-            if(playerPoint - 24 <= 0) {} else if(wallMass[playerPoint-25] == 'wall' || wallMass[playerPoint-25] == 'enemy' || wallMass[playerPoint-25] == 'HP') {} 
-            else {
+            if(playerPoint - 24 <= 0) {} else if(wallMass[playerPoint-25] == 'wall' || wallMass[playerPoint-25] == 'enemy') {} 
+            else if(wallMass[playerPoint-2] == 'HP'){
+                console.log('хилка')
+            } else {
                 player = document.getElementById(playerPoint-24);
                 plpoint.remove();
                 player.insertAdjacentHTML("beforeend", `<div class="tileP" id=${playerPoint-24+4000}><div class='health' style="width:${health}%"></div></div>`);
                 playerPoint -= 24;
             }
         } else if (key === 'a' || key === 'ф') {
-            if(playerPoint % 24 == 1) {} else if (wallMass[playerPoint-2] == 'wall' || wallMass[playerPoint-2] == 'enemy' || wallMass[playerPoint-2] == 'HP') {} 
-            else {
+            if(playerPoint % 24 == 1) {} else if (wallMass[playerPoint-2] == 'wall' || wallMass[playerPoint-2] == 'enemy') {} 
+            else if(wallMass[playerPoint-2] == 'HP'){
+                console.log('хилка')
+            } else {
                 player = document.getElementById(playerPoint-1);
                 playerPoint -= 1;
                 plpoint.remove();
                 player.insertAdjacentHTML("beforeend", `<div class="tileP" id=${playerPoint+4000}><div class='health' style="width:${health}%"></div></div>`);
             }
         } else if (key === 's' || key === 'ы') {
-            if(playerPoint + 24 > 312) {} else if(wallMass[playerPoint+23] == 'wall'|| wallMass[playerPoint+23] == 'enemy' || wallMass[playerPoint+23] == 'HP') {} 
-            else {
+            if(playerPoint + 24 > 312) {} else if(wallMass[playerPoint+23] == 'wall'|| wallMass[playerPoint+23] == 'enemy') {} 
+            else if(wallMass[playerPoint-2] == 'HP'){
+                console.log('хилка')
+            } else {
                 player = document.getElementById(playerPoint+24);
                 playerPoint += 24;
                 plpoint.remove();
                 player.insertAdjacentHTML("beforeend", `<div class="tileP" id=${playerPoint+4000}><div class='health' style="width:${health}%"></div></div>`);
             }
         } else if(key === 'd' || key === 'в') {
-            if(playerPoint % 24 == 0) {} else if(wallMass[playerPoint] == 'wall' || wallMass[playerPoint] == 'enemy' || wallMass[playerPoint] == 'HP') {} 
-            else {
+            if(playerPoint % 24 == 0) {} else if(wallMass[playerPoint] == 'wall' || wallMass[playerPoint] == 'enemy') {} 
+            else if(wallMass[playerPoint-2] == 'HP'){
+                console.log('хилка')
+            } else {
                 player = document.getElementById(playerPoint+1);
                 playerPoint += 1;
                 plpoint.remove();
                 player.insertAdjacentHTML("beforeend", `<div class="tileP" id=${playerPoint+4000}><div class='health' style="width:${health}%"></div></div>`);
             }
         } else {
-            let toppoint = document.getElementById(playerPoint-25);
-            let bottompoint = document.getElementById(playerPoint+23);
-            let leftpoint = document.getElementById(playerPoint-2);
-            let rightpoint = document.getElementById(playerPoint);
-            console.log(wallMass[toppoint.id] + ' Верх');
-            console.log(wallMass[leftpoint.id] + ' лево');
-            console.log(wallMass[bottompoint.id] + ' низ');
-            console.log(wallMass[rightpoint.id] + ' право');
+            let toppoint = document.getElementById(playerPoint-24);
+            let bottompoint = document.getElementById(playerPoint+24);
+            let leftpoint = document.getElementById(playerPoint-1);
+            let rightpoint = document.getElementById(playerPoint+1); 
+            if(wallMass[toppoint.id-1] == 'enemy') {
+                kill(toppoint);
+            } else if(wallMass[bottompoint.id-1] == 'enemy') {
+                kill(bottompoint);
+            } else if(wallMass[leftpoint.id-1] == 'enemy') {
+                kill(leftpoint);
+            } else if(wallMass[rightpoint.id-1] == 'enemy') {
+                kill(rightpoint);
+            }
+            function kill(point) {
+                let childPoint = point.querySelector('div');
+                let hpe = childPoint.querySelector('div');
+                let hpenemy = hpe.style.width;
+                hpenemy = hpenemy.split('');
+                hpenemy.pop();
+                hpenemy = hpenemy.join('');
+                console.log(hpenemy)
+                hpenemy = parseInt(hpenemy);
+                hpenemy -= 25;
+                hpe.style.width = `${hpenemy}%`;
+                if(hpenemy <= 0) {
+                    childPoint.remove();
+                    point.insertAdjacentHTML("beforeend", `<div class="tile" id=${point.id+1000}></div>`);
+                }
+            }   
         }
     }
-    setTimeout(fieldScanner,1000)
+    setTimeout(fieldScanner,2000)
 });
 game();
