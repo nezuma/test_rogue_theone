@@ -236,6 +236,15 @@ window.addEventListener('keydown', function (event) {
                 plpoint.remove();
                 player.insertAdjacentHTML("beforeend", `<div class="tileP" id=${playerPoint+4000}><div class='health' style="width:${health}%"></div></div>`);
                 fieldScanner();
+            } else if(wallMass[playerPoint-25] == 'sword') {
+                player = document.getElementById(playerPoint-24);
+                hppoint = toppoint.querySelector('div');
+                hppoint.remove();
+                toppoint.insertAdjacentHTML('beforeend', `<div class='tile' id=${playerPoint}><div>`)
+                playerPoint -= 24;
+                plpoint.remove();
+                player.insertAdjacentHTML("beforeend", `<div class="tileP" id=${playerPoint+4000}><div class='health' style="width:${health}%"></div></div>`);
+                fieldScanner();
             } else {
                 player = document.getElementById(playerPoint-24);
                 plpoint.remove();
